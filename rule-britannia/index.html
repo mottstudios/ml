@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Already On The List</title>
+<link rel="icon" href="favicon.ico" sizes="48x48" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#9E00C4" />
+<style>
+  :root {
+    --ground: #F8F9FA;
+    --bar: #9E00C4;
+    --on-bar: #FFFFFF;
+    --card: #FFFFFF;
+    --card-2: #F4F5F7;
+    --ink: #14171B;
+    --muted: #14171B;
+    --hair: #C9CED5;
+    --accent: #1DB954;
+    --on-accent: #0A0A0A;
+    --focus: #2C3FBE;
+    --shadow: 0 1px 2px rgba(20,23,27,.06), 0 8px 24px -12px rgba(20,23,27,.18);
+
+    --red: #B3231F;      --red-bg: #FBE1DF;
+    --yellow: #8A6300;   --yellow-bg: #FBF0C9;
+    --blue: #1F5C9E;     --blue-bg: #E1EDFA;
+    --green: #14713F;    --green-bg: #DCF1E2;
+    --grey: #14171B;     --grey-bg: #EDEFF2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0F1216;
+      --bar: #9E00C4;
+      --on-bar: #FFFFFF;
+      --card: #171B21;
+      --card-2: #1D222A;
+      --ink: #E6EAEF;
+      --muted: #E6EAEF;
+      --hair: #333A44;
+      --accent: #1DB954;
+      --on-accent: #0A0A0A;
+      --focus: #8AA0FF;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+
+      --red: #FF7B72;     --red-bg: #2F1614;
+      --yellow: #E9C45E;  --yellow-bg: #2C2412;
+      --blue: #7FB6F0;    --blue-bg: #13222F;
+      --green: #5FCB8E;   --green-bg: #11271A;
+      --grey: #E6EAEF;    --grey-bg: #1B2027;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0F1216;
+    --bar: #9E00C4;
+    --on-bar: #FFFFFF;
+    --card: #171B21;
+    --card-2: #1D222A;
+    --ink: #E6EAEF;
+    --muted: #E6EAEF;
+    --hair: #333A44;
+    --accent: #1DB954;
+    --on-accent: #0A0A0A;
+    --focus: #8AA0FF;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 28px -14px rgba(0,0,0,.7);
+
+    --red: #FF7B72;     --red-bg: #2F1614;
+    --yellow: #E9C45E;  --yellow-bg: #2C2412;
+    --blue: #7FB6F0;    --blue-bg: #13222F;
+    --green: #5FCB8E;   --green-bg: #11271A;
+    --grey: #E6EAEF;    --grey-bg: #1B2027;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Segoe UI Variable Text", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 44px 20px 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  .topbar { background: var(--bar); }
+  .topbar .inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 16px 20px;
+  }
+  .eyebrow {
+    font-family: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
+    font-size: clamp(15px, 2.6vw, 19px);
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--on-bar);
+    margin: 0;
+  }
+
+  h1 {
+    margin-top: 0;
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: clamp(34px, 6vw, 46px);
+    line-height: 1.04;
+    letter-spacing: -.02em;
+    font-weight: 600;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .sub { margin: 12px 0 0; color: var(--muted); }
+  .sub b { color: var(--ink); font-weight: 600; }
+  .sub a { color: var(--bar); font-weight: 700; text-decoration: none; }
+  .sub a:hover { text-decoration: underline; }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+  }
+
+  form { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
+
+  label {
+    font-family: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .row { display: flex; gap: 10px; }
+
+  input[type="text"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-family: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--card-2);
+    border: 1px solid var(--hair);
+    border-radius: 3px;
+    padding: 12px 13px;
+  }
+  input[type="text"]::placeholder { color: var(--muted); opacity: .75; }
+
+  button {
+    font: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--on-accent);
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 12px 22px;
+    cursor: pointer;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:active { transform: translateY(1px); }
+  button[disabled] { opacity: .5; cursor: default; }
+
+  :is(input, button, summary, a):focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .hint { font-size: 13px; color: var(--muted); margin: 0; }
+
+  /* source bar */
+  .source {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 14px;
+    font-size: 13px;
+    color: var(--muted);
+    padding: 12px 20px;
+    border-top: 1px solid var(--hair);
+    background: var(--card-2);
+    border-radius: 0 0 3px 3px;
+  }
+  .source strong { color: var(--ink); font-weight: 600; }
+  .linkish {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    color: var(--accent);
+    text-decoration: underline;
+    cursor: pointer;
+    width: auto;
+  }
+  .linkish:hover { filter: none; }
+
+  /* ---------- verdict ---------- */
+  .verdict {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px;
+    border: 2px solid var(--grey);
+    border-radius: 4px;
+    background: var(--grey-bg);
+  }
+  .verdict.show { display: flex; }
+
+  .verdict[data-state="red"]    { border-color: var(--red);    background: var(--red-bg); }
+  .verdict[data-state="yellow"] { border-color: var(--yellow); background: var(--yellow-bg); }
+  .verdict[data-state="blue"]   { border-color: var(--blue);   background: var(--blue-bg); }
+  .verdict[data-state="green"]  { border-color: var(--green);  background: var(--green-bg); }
+
+  .status {
+    margin: 0;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+  .verdict[data-state="red"]    .status { color: var(--red); }
+  .verdict[data-state="yellow"] .status { color: var(--yellow); }
+  .verdict[data-state="blue"]   .status { color: var(--blue); }
+  .verdict[data-state="green"]  .status { color: var(--green); }
+
+  .verdict h2 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.15;
+    margin: 0;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+  .verdict .by { margin: 3px 0 0; font-size: 16px; color: var(--ink); }
+  .verdict .note { margin: 0; font-size: 15px; color: var(--ink); }
+  .verdict .note a { color: inherit; }
+
+  .headline { display: flex; gap: 14px; align-items: flex-start; }
+  .headline img { width: 64px; height: 64px; border-radius: 3px; flex: 0 0 auto; }
+
+  .eyeball { border-top: 1px solid currentColor; padding-top: 12px; }
+  .verdict[data-state="yellow"] .eyeball { border-color: rgba(138,99,0,.3); }
+  .verdict[data-state="blue"]   .eyeball { border-color: rgba(31,92,158,.3); }
+  .eyeball h3 {
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 600;
+    margin: 0 0 10px;
+  }
+  .found-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .found-list li { font-size: 16px; line-height: 1.3; color: var(--ink); }
+  .found-list .who { display: block; font-size: 13px; }
+
+  /* ---------- playlist index ---------- */
+  details { border-top: 1px solid var(--hair); padding-top: 20px; }
+  summary {
+    cursor: pointer;
+    font-family: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 12px solid var(--accent);
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    transition: transform .15s ease;
+  }
+  details[open] summary::before { transform: rotate(90deg); }
+  @media (prefers-reduced-motion: reduce) { summary::before { transition: none; } }
+
+  .idx { margin-top: 16px; }
+  .idx-row {
+    display: grid;
+    grid-template-columns: 2.4em 1fr;
+    gap: 2px 14px;
+    padding: 9px 8px;
+    border-bottom: 1px solid var(--hair);
+    align-items: baseline;
+  }
+  .idx-row:first-child { border-top: 1px solid var(--hair); }
+  .idx-row .n {
+    font-family: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
+    font-size: 12px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .idx-row .t { font-size: 15px; }
+  .idx-row .a { grid-column: 2; font-size: 13px; color: var(--muted); }
+
+  footer { font-size: 13px; color: var(--muted); border-top: 1px solid var(--hair); padding-top: 16px; }
+
+  @media (max-width: 520px) {
+    .row { flex-direction: column; }
+    #go { width: 100%; }
+  }
+
+  /* ---------- page switch ---------- */
+  .topbar .inner { display: flex; align-items: center; justify-content: space-between; gap: 10px 16px; flex-wrap: wrap; }
+  .switch { display: flex; padding: 2px; border: 1px solid rgba(255,255,255,.55); border-radius: 999px; font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+  .switch a { padding: 5px 14px; border-radius: 999px; font-size: 13px; font-weight: 600; line-height: 1.3; color: var(--on-bar); text-decoration: none; white-space: nowrap; }
+  .switch a:hover { background: rgba(255,255,255,.16); }
+  .switch a[aria-current] { background: var(--on-bar); color: var(--bar); }
+  .switch a:focus-visible { outline-color: var(--on-bar); }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="inner"><p class="eyebrow">Music League :: Rule Britannia</p>
+    <nav class="switch" aria-label="Pages"><a href="./" aria-current="page">Already on the list?</a><a href="sort/">Submissions Sorter</a></nav></div></div>
+
+<div class="wrap">
+  <header>
+    <h1>Already on the list?</h1>
+    <p class="sub">Check whether a song has already been submitted to Music League <b>RULE BRITANNIA</b>.<br />The playlist of previously submitted songs <a href="https://open.spotify.com/playlist/3rSPqCm0vYxn207DdVdqmm" target="_blank" rel="noopener">is here</a>.</p>
+  </header>
+
+  <div class="panel">
+    <form id="f">
+      <label for="q">Enter a Spotify link, URI, ID, song title, or artist name to search</label>
+      <div class="row">
+        <input type="text" id="q" autocomplete="off" spellcheck="false" placeholder="https://open.spotify.com/track/&hellip;" />
+        <button type="submit" id="go">Check</button>
+      </div>
+      <p class="hint">An exact ID match is definitive. If the ID is new, the song is looked up by name and any close calls in the playlist are listed for you to eyeball.</p>
+    </form>
+    <div class="source" id="src">
+      <span id="src-text">Loading the playlist&hellip;</span>
+    </div>
+  </div>
+
+  <div class="verdict" id="v" role="status" aria-live="polite">
+    <p class="status" id="v-status"></p>
+    <div class="headline">
+      <img id="v-art" alt="" hidden />
+      <div>
+        <h2 id="v-head"></h2>
+        <p class="by" id="v-by" hidden></p>
+      </div>
+    </div>
+    <p class="note" id="v-note"></p>
+    <div id="v-extra"></div>
+  </div>
+
+  <details id="idx-wrap">
+    <summary id="idx-summary">The playlist</summary>
+    <div class="idx" id="idx"></div>
+  </details>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+"use strict";
+
+const PLAYLIST_URL = "https://open.spotify.com/playlist/3rSPqCm0vYxn207DdVdqmm";
+
+/* ---------- CSV ---------- */
+
+function parseCSV(text) {
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  const rows = [];
+  let row = [], field = "", inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += c;
+    } else if (c === '"') {
+      inQuotes = true;
+    } else if (c === ",") {
+      row.push(field); field = "";
+    } else if (c === "\n") {
+      row.push(field); field = "";
+      if (row.length > 1 || row[0] !== "") rows.push(row);
+      row = [];
+    } else if (c !== "\r") {
+      field += c;
+    }
+  }
+  row.push(field);
+  if (row.length > 1 || row[0] !== "") rows.push(row);
+
+  const head = rows.shift().map(function (h) { return h.trim(); });
+  return rows.map(function (r) {
+    const o = {};
+    head.forEach(function (h, i) { o[h] = (r[i] || "").trim(); });
+    return o;
+  });
+}
+
+/* ---------- state ---------- */
+
+let TRACKS = [];
+let byId = new Map();
+
+function clean(s) {
+  return (s || "").replace(/[​-‍﻿]/g, "").trim();
+}
+
+function loadRows(rows) {
+  TRACKS = rows
+    .filter(function (r) { return r["Spotify - id"]; })
+    .map(function (r, i) {
+      return {
+        pos: i + 1,
+        id: r["Spotify - id"],
+        title: clean(r["Track name"]),
+        artist: clean(r["Artist name"]),
+        album: clean(r["Album"]),
+        isrc: r["ISRC"] || ""
+      };
+    });
+  byId = new Map(TRACKS.map(function (t) { return [t.id, t]; }));
+  buildIndex();
+}
+
+/* ---------- matching ---------- */
+
+function norm(s) {
+  return clean(s)
+    .toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/\s*[([][^)\]]*[)\]]/g, " ")
+    .replace(/\s-\s.*$/, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\b(the|a|an)\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function tokens(s) { return norm(s).split(" ").filter(Boolean); }
+
+function similarity(a, b) {
+  const na = norm(a), nb = norm(b);
+  if (!na || !nb) return 0;
+  if (na === nb) return 1;
+  if (na.includes(nb) || nb.includes(na)) return 0.8;
+  const ta = new Set(tokens(a)), tb = new Set(tokens(b));
+  let shared = 0;
+  ta.forEach(function (t) { if (tb.has(t)) shared++; });
+  const union = new Set([].concat(Array.from(ta), Array.from(tb))).size;
+  return union ? shared / union : 0;
+}
+
+function titleMatches(title) {
+  return TRACKS
+    .map(function (t) { return { t: t, score: similarity(title, t.title) }; })
+    .filter(function (m) { return m.score >= 0.45; })
+    .sort(function (a, b) { return b.score - a.score; })
+    .slice(0, 6)
+    .map(function (m) { return m.t; });
+}
+
+function artistMatches(text) {
+  const q = norm(text);
+  if (!q) return [];
+  return TRACKS.filter(function (t) {
+    return norm(t.artist).includes(q) || similarity(text, t.artist) >= 0.7;
+  });
+}
+
+/* ---------- input parsing ---------- */
+
+function parseInput(raw) {
+  const s = raw.trim();
+  if (!s) return { kind: "empty" };
+
+  let m = s.match(/(?:spotify:track:|open\.spotify\.com\/(?:intl-[a-zA-Z-]+\/)?track\/)([A-Za-z0-9]{22})/);
+  if (m) return { kind: "id", id: m[1] };
+
+  m = s.match(/(?:spotify:|open\.spotify\.com\/(?:intl-[a-zA-Z-]+\/)?)(album|playlist|artist|episode|show)[:/]/);
+  if (m) return { kind: "wrongtype", type: m[1] };
+
+  if (/^[A-Za-z0-9]{22}$/.test(s)) return { kind: "id", id: s };
+  if (/spotify\.com|spotify:/.test(s)) return { kind: "badlink" };
+
+  return { kind: "text", text: s };
+}
+
+/* ---------- Spotify name lookup (oEmbed, no key needed) ---------- */
+
+function lookupName(id) {
+  const url = "https://open.spotify.com/oembed?url=" +
+    encodeURIComponent("https://open.spotify.com/track/" + id);
+  return fetch(url)
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) { return j ? { title: j.title || "", art: j.thumbnail_url || "" } : null; })
+    .catch(function () { return null; });
+}
+
+/* ---------- rendering ---------- */
+
+const v = document.getElementById("v");
+const vStatus = document.getElementById("v-status");
+const vHead = document.getElementById("v-head");
+const vBy = document.getElementById("v-by");
+const vNote = document.getElementById("v-note");
+const vExtra = document.getElementById("v-extra");
+const vArt = document.getElementById("v-art");
+
+function show(o) {
+  v.dataset.state = o.state;
+  v.classList.add("show");
+
+  vStatus.textContent = o.status;
+  vHead.textContent = o.head;
+
+  if (o.by) { vBy.textContent = o.by; vBy.hidden = false; }
+  else vBy.hidden = true;
+
+  if (o.art) { vArt.src = o.art; vArt.hidden = false; }
+  else { vArt.removeAttribute("src"); vArt.hidden = true; }
+
+  vNote.replaceChildren();
+  if (o.note) { vNote.append(o.note); vNote.hidden = false; }
+  else vNote.hidden = true;
+
+  vExtra.replaceChildren();
+  (o.extra || []).forEach(function (n) { vExtra.append(n); });
+}
+
+function noteWithPlaylistLink(before, linkText, after) {
+  const frag = document.createDocumentFragment();
+  frag.append(document.createTextNode(before));
+  const a = document.createElement("a");
+  a.href = PLAYLIST_URL;
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.textContent = linkText;
+  frag.append(a);
+  frag.append(document.createTextNode(after));
+  return frag;
+}
+
+function listBlock(tracks, heading) {
+  const box = document.createElement("div");
+  box.className = "eyeball";
+  const h = document.createElement("h3");
+  h.textContent = heading;
+  const ul = document.createElement("ul");
+  ul.className = "found-list";
+  tracks.forEach(function (t) {
+    const li = document.createElement("li");
+    const strong = document.createElement("strong");
+    strong.textContent = t.title;
+    const who = document.createElement("span");
+    who.className = "who";
+    who.textContent = t.artist + "  ·  #" + t.pos;
+    li.append(strong, who);
+    ul.append(li);
+  });
+  box.append(h, ul);
+  return box;
+}
+
+/* ---------- checks ---------- */
+
+function checkId(id) {
+  const hit = byId.get(id);
+
+  if (hit) {
+    show({
+      state: "red",
+      status: "Already submitted",
+      head: hit.title,
+      by: hit.artist,
+      note: noteWithPlaylistLink(
+        "Exact ID match — this is track #" + hit.pos + " in ",
+        "the playlist",
+        "."
+      )
+    });
+    return;
+  }
+
+  show({ state: "grey", status: "Checking", head: "Looking that track up…" });
+
+  lookupName(id).then(function (info) {
+    if (!info || !info.title) {
+      show({
+        state: "green",
+        status: "Not on the list",
+        head: "No track with that ID",
+        note: document.createTextNode(
+          "The song's name could not be fetched, so only the ID was checked. Type the title into the box to also search by name."
+        )
+      });
+      return;
+    }
+
+    const matches = titleMatches(info.title);
+
+    if (matches.length) {
+      show({
+        state: "yellow",
+        status: "Track name match",
+        head: info.title,
+        art: info.art,
+        note: document.createTextNode(
+          "This exact recording has not been submitted, but " +
+          (matches.length === 1 ? "one track" : matches.length + " tracks") +
+          " on the list share the name."
+        ),
+        extra: [listBlock(matches, "You might want to eyeball these")]
+      });
+      return;
+    }
+
+    show({
+      state: "green",
+      status: "Not on the list",
+      head: info.title,
+      art: info.art,
+      note: document.createTextNode("No ID or song title match. Probably safe to submit, but to be extra safe, search the artist name as well.")
+    });
+  });
+}
+
+function checkText(text) {
+  const titles = titleMatches(text);
+  const artists = artistMatches(text);
+
+  if (titles.length) {
+    const extra = [listBlock(titles, titles.length === 1 ? "The match" : "The matches")];
+    const others = artists.filter(function (a) { return titles.indexOf(a) === -1; });
+    if (others.length) extra.push(listBlock(others, "Same artist, different song"));
+
+    show({
+      state: "yellow",
+      status: "Track name match",
+      head: "“" + text + "”",
+      note: document.createTextNode(
+        (titles.length === 1 ? "One track" : titles.length + " tracks") + " on the list share that name."
+      ),
+      extra: extra
+    });
+    return;
+  }
+
+  if (artists.length) {
+    show({
+      state: "blue",
+      status: "Artist name match",
+      head: artists[0].artist,
+      note: document.createTextNode(
+        "No track by that name, but this artist is already on the list " +
+        (artists.length === 1 ? "once" : artists.length + " times") + "."
+      ),
+      extra: [listBlock(artists, "Already submitted from this artist")]
+    });
+    return;
+  }
+
+  show({
+    state: "green",
+    status: "Not on the list",
+    head: "“" + text + "”",
+    note: document.createTextNode("No track name, artist or album on the list matches that. Safe to submit.")
+  });
+}
+
+/* ---------- index ---------- */
+
+function buildIndex() {
+  const idx = document.getElementById("idx");
+  const frag = document.createDocumentFragment();
+  TRACKS.forEach(function (t) {
+    const row = document.createElement("div");
+    row.className = "idx-row";
+    row.dataset.pos = t.pos;
+
+    const n = document.createElement("span");
+    n.className = "n";
+    n.textContent = String(t.pos).padStart(2, "0");
+
+    const ti = document.createElement("span");
+    ti.className = "t";
+    ti.textContent = t.title;
+
+    const a = document.createElement("span");
+    a.className = "a";
+    a.textContent = t.artist;
+
+    row.append(n, ti, a);
+    frag.append(row);
+  });
+  idx.replaceChildren(frag);
+  document.getElementById("idx-summary").textContent = "The playlist — all " + TRACKS.length + " tracks";
+}
+
+/* ---------- playlist source ---------- */
+
+const srcText = document.getElementById("src-text");
+const goBtn = document.getElementById("go");
+
+function ready(n, when) {
+  goBtn.disabled = false;
+  srcText.innerHTML = "<strong>" + n + " tracks</strong>" + (when ? " · list updated " + when : "");
+  document.getElementById("foot").textContent =
+    "The list is built from the league's submissions export. Anything submitted after the last export will not be found here.";
+}
+
+function fmtDate(d) {
+  return d.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+}
+
+goBtn.disabled = true;
+
+fetch("playlist.csv", { cache: "no-cache" })
+  .then(function (r) {
+    if (!r.ok) throw new Error("no file");
+    const lm = r.headers.get("last-modified");
+    return r.text().then(function (t) { return { text: t, when: lm ? fmtDate(new Date(lm)) : "" }; });
+  })
+  .then(function (o) {
+    loadRows(parseCSV(o.text));
+    ready(TRACKS.length, o.when);
+  })
+  .catch(function () {
+    srcText.textContent = "Playlist file not found.";
+    document.getElementById("foot").textContent =
+      "The playlist file could not be loaded, so nothing can be checked right now.";
+  });
+
+/* ---------- submit ---------- */
+
+document.getElementById("f").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const parsed = parseInput(document.getElementById("q").value);
+
+  if (parsed.kind === "empty") {
+    show({ state: "grey", status: "Nothing to check", head: "Paste a link first",
+      note: document.createTextNode("A Spotify track link, a spotify:track: URI, a bare 22-character ID, or a song title.") });
+    return;
+  }
+  if (parsed.kind === "wrongtype") {
+    show({ state: "grey", status: "Wrong link type",
+      head: "That is " + (/^[aeiou]/i.test(parsed.type) ? "an " : "a ") + parsed.type + " link",
+      note: document.createTextNode("This checks one song at a time. Open the song in Spotify, then Share → Copy Song Link.") });
+    return;
+  }
+  if (parsed.kind === "badlink") {
+    show({ state: "grey", status: "Link not recognised", head: "No track ID in that link",
+      note: document.createTextNode("Spotify song links look like open.spotify.com/track/ followed by 22 letters and numbers.") });
+    return;
+  }
+  if (parsed.kind === "id") { checkId(parsed.id); return; }
+  checkText(parsed.text);
+});
+</script>
+</body>
+</html>
