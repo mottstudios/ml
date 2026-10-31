@@ -8,12 +8,16 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#9E00C4" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600&display=swap" />
+<meta name="theme-color" content="#000000" />
 <style>
   :root {
     --ground: #F8F9FA;
-    --bar: #9E00C4;
+    --bar: #000000;
     --on-bar: #FFFFFF;
+    --hi: #000000;
     --card: #FFFFFF;
     --card-2: #F4F5F7;
     --ink: #14171B;
@@ -32,8 +36,9 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
+      --hi: #FFFFFF;
       --ground: #0F1216;
-      --bar: #9E00C4;
+      --bar: #000000;
       --on-bar: #FFFFFF;
       --card: #171B21;
       --card-2: #1D222A;
@@ -53,8 +58,9 @@
     }
   }
   :root[data-theme="dark"] {
+    --hi: #FFFFFF;
     --ground: #0F1216;
-    --bar: #9E00C4;
+    --bar: #000000;
     --on-bar: #FFFFFF;
     --card: #171B21;
     --card-2: #1D222A;
@@ -94,16 +100,17 @@
     gap: 26px;
   }
 
+  .hero { height: 60px; background: #E9E4DC url(header.jpg) center / cover no-repeat; }
   .topbar { background: var(--bar); }
   .topbar .inner {
-    max-width: 720px;
+    max-width: 1240px;
     margin: 0 auto;
-    padding: 16px 20px;
+    padding: 16px 24px;
   }
   .eyebrow {
-    font-family: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
-    font-size: clamp(15px, 2.6vw, 19px);
-    font-weight: 700;
+    font-family: "Instrument Sans", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
     letter-spacing: .1em;
     text-transform: uppercase;
     color: var(--on-bar);
@@ -123,7 +130,7 @@
 
   .sub { margin: 12px 0 0; color: var(--muted); }
   .sub b { color: var(--ink); font-weight: 600; }
-  .sub a { color: var(--bar); font-weight: 700; text-decoration: none; }
+  .sub a { color: var(--hi); font-weight: 700; text-decoration: none; }
   .sub a:hover { text-decoration: underline; }
 
   .panel {
@@ -331,6 +338,7 @@
 </style>
 </head>
 <body>
+<div class="hero" aria-hidden="true"></div>
 <div class="topbar"><div class="inner"><p class="eyebrow">Music League :: Digging Into 1969</p>
     <nav class="switch" aria-label="Pages"><a href="./" aria-current="page">Already on the list?</a><a href="sort/">Submissions Sorter</a></nav></div></div>
 
@@ -727,7 +735,7 @@ function ready(n, when) {
   goBtn.disabled = false;
   srcText.innerHTML = "<strong>" + n + " tracks</strong>" + (when ? " · list updated " + when : "");
   document.getElementById("foot").textContent =
-    "The list is built from the league's submissions export. Anything submitted after the last export will not be found here.";
+    "This list is rebuilt weekly by Tom after each round ends. If it looks out of date, nudge him in the ML chat.";
 }
 
 function fmtDate(d) {
